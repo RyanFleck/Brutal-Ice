@@ -14,4 +14,4 @@ To run on local machine:
 4. Browse to `localhost:8080` and the game will run.
 
 Resources:
-1. <https://github.com/kittykatattack/learningPixi#settingup>
+1. Lots of best practices and initial setup =>  <https://github.com/kittykatattack/learningPixi#settingup>

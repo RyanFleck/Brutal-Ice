@@ -2,12 +2,18 @@ import * as PIXI from 'pixi.js';
 
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
+// PIXI Aliases as noted in README resources.
+const Application = PIXI.Application;
+const loader = PIXI.loader;
+const resources = PIXI.loader.resources;
+const Sprite = PIXI.Sprite;
+
 /*
  * import pageNavigation from './inc/page-navigation';
  * import socketIOFunctions from './inc/socket-functions';
 */
 
-const app = new PIXI.Application(256, 240, {
+const app = new Application(256, 240, {
     antialias: false,
     transparent: false,
     resolution: 4,
@@ -27,13 +33,13 @@ function game() {
         app.renderer.resize(window.innerWidth, window.innerHeight);
     }, false);
 
-    PIXI.loader
+    loader
         .add('sprites/player-v1.png')
         .load(setup);
 }
 
 function setup() {
-    const sprite = new PIXI.Sprite(PIXI.loader.resources['sprites/player-v1.png'].texture);
+    const sprite = new Sprite(resources['sprites/player-v1.png'].texture);
     app.stage.addChild(sprite);
     console.log('gotime.');
 }

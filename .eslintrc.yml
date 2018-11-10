@@ -8,3 +8,4 @@ rules:
   linebreak-style: off
   indent: ["error", 4]
   no-plusplus: 0
+  prefer-destructuring: 0
