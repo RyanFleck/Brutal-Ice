@@ -1,4 +1,9 @@
 import * as PIXI from 'pixi.js';
+import * as Stats from 'stats.js';
+
+const stats = new Stats();
+stats.showPanel(0);
+
 
 // Constants
 const gameWidth = 256;
@@ -13,11 +18,7 @@ const loader = PIXI.loader;
 const resources = PIXI.loader.resources;
 const Sprite = PIXI.Sprite;
 
-/*
- * import pageNavigation from './inc/page-navigation';
- * import socketIOFunctions from './inc/socket-functions';
-*/
-
+// Important Game Elements
 const app = new Application(gameWidth, gameHeight, {
     antialias: false,
     transparent: false,
@@ -25,6 +26,7 @@ const app = new Application(gameWidth, gameHeight, {
     resolution: window.devicePixelRatio || 1,
     backgroundColor: 0x222222,
 });
+let sprite = null;
 
 function game() {
     console.log('running...');
@@ -35,6 +37,7 @@ function game() {
     app.autoResize = true;
     document.getElementById('loading').remove();
     document.body.appendChild(app.view);
+    document.body.appendChild(stats.dom);
 
     window.addEventListener('resize', () => {
         resize();
@@ -50,7 +53,7 @@ function game() {
  * Setup runs after all resources have been loaded as textures.
  */
 function setup() {
-    const sprite = new Sprite(resources.pv1.texture);
+    sprite = new Sprite(resources.pv1.texture);
     console.log(`
     Sprite size: ${sprite.width},${sprite.height}
     `);
@@ -61,6 +64,19 @@ function setup() {
 
     app.stage.addChild(sprite);
     console.log('gotime.');
+    animate();
+}
+
+function animate() {
+    stats.begin();
+
+    sprite.rotation += 0.02;
+    const scale = 1 + Math.sin(sprite.rotation * 2) / 3;
+    sprite.scale.set(scale, scale);
+
+    stats.end();
+
+    requestAnimationFrame(animate);
 }
 
 function resize() {
@@ -69,7 +85,7 @@ function resize() {
         window.innerHeight / gameHeight,
     );
 
-    console.log(`Resizing to ${window.innerWidth}, ${window.innerHeight}. Scale ${scale}.`);
+    // console.log(`Resizing to ${window.innerWidth}, ${window.innerHeight}. Scale ${scale}.`);
     app.renderer.resize(Math.ceil(gameWidth * scale), Math.ceil(gameHeight * scale));
     app.stage.scale.set(scale);
 }
@@ -79,5 +95,6 @@ function handleProgress(iloader, resource) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    setTimeout(game, 25);
+    // setTimeout(game, 25);
+    game();
 });

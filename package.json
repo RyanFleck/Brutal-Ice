@@ -24,6 +24,7 @@
   "dependencies": {
     "fs": "0.0.1-security",
     "lodash": "^4.17.11",
-    "pixi.js": "^4.8.2"
+    "pixi.js": "^4.8.2",
+    "stats.js": "^0.17.0"
   }
 }
