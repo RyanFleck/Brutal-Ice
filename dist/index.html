@@ -12,19 +12,26 @@
         overflow: hidden;
         background: #111;
         color: #444;
-        font-size: 32px;
+        font-size: 48px;
         font-family: monospace;
         text-align: center;
       }
-      #brutal-ice {
-        height: 100vh;
+      #loading {
+        display: table;
         width: 100%;
-        background-color: #333;
+        height: 100vh;
+      }
+      #loading div {
+        display: table-cell;
+        vertical-align: middle;
+        text-align: center;
       }
     </style>
   </head>
   <body>
-    <div id="loading">loading</div>
+    <div id="loading">
+      <div>loading</div>
+    </div>
     <script src="brutal_ice.js"></script>
   </body>
 </html>
