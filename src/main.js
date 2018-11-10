@@ -1,5 +1,10 @@
 import * as PIXI from 'pixi.js';
 
+// Constants
+const gameWidth = 256;
+const gameHeight = 240;
+
+// PIXI Config
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
 // PIXI Aliases as noted in README resources.
@@ -13,24 +18,26 @@ const Sprite = PIXI.Sprite;
  * import socketIOFunctions from './inc/socket-functions';
 */
 
-const app = new Application(256, 240, {
+const app = new Application(gameWidth, gameHeight, {
     antialias: false,
     transparent: false,
-    resolution: 4,
-    backgroundColor: 0x090909,
+    roundPixels: true,
+    resolution: window.devicePixelRatio || 1,
+    backgroundColor: 0x222222,
 });
 
 function game() {
     console.log('running...');
 
-    resize(app.renderer);
+    resize();
     app.view.style.display = 'block';
+    app.view.id = 'brutal-ice';
     app.autoResize = true;
     document.getElementById('loading').remove();
     document.body.appendChild(app.view);
 
     window.addEventListener('resize', () => {
-        resize(app.renderer);
+        resize();
     }, false);
 
     loader
@@ -47,16 +54,24 @@ function setup() {
     console.log(`
     Sprite size: ${sprite.width},${sprite.height}
     `);
+
     sprite.pivot.set(sprite.width / 2, sprite.height / 2);
-    sprite.x = window.innerWidth / 8;
-    sprite.y = window.innerHeight / 8;
+    sprite.x = gameWidth / 2;
+    sprite.y = gameHeight / 2;
+
     app.stage.addChild(sprite);
     console.log('gotime.');
 }
 
-function resize(renderer) {
-    console.log(`Resizing to ${window.innerWidth}, ${window.innerHeight}.`);
-    renderer.resize(window.innerWidth, window.innerHeight);
+function resize() {
+    const scale = Math.min(
+        window.innerWidth / gameWidth,
+        window.innerHeight / gameHeight,
+    );
+
+    console.log(`Resizing to ${window.innerWidth}, ${window.innerHeight}. Scale ${scale}.`);
+    app.renderer.resize(Math.ceil(gameWidth * scale), Math.ceil(gameHeight * scale));
+    app.stage.scale.set(scale);
 }
 
 function handleProgress(iloader, resource) {
