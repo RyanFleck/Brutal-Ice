@@ -2,7 +2,9 @@
 
 Brutal Ice will be my *very first (usable) public game.*
 
-Remake of the NES Classic "Blades of Steel" in Pixi.JS with NodeJS/Express/Socket.IO multiplayer engine. Beta will be available soon at <https://ryanfleck.github.io/experiments/brutal-ice>
+![player](dist/sprites/player-v2.png)
+
+Remake of the NES Classic "Blades of Steel" in Pixi.JS with NodeJS/Express/Socket.IO multiplayer engine. Beta will be available soon at <https://ryanfleck.github.io/experiments/brutal-ice>. Read more about why this game is great at <https://arstechnica.com/gaming/2010/11/masterpiece-blades-of-steel/>
 
 Render dimensions have been set to reflect the constraints of the NES: `256 x 240`.
 
@@ -17,3 +19,13 @@ To run on local machine:
 
 Resources:
 1. Lots of best practices and initial setup =>  <https://github.com/kittykatattack/learningPixi#settingup>
+
+## Development Notes
+
+In this screenshot of *BOS*, it can be seen that the player sprites are simply y-mirrored and exist facing five directions: up, up-right, right, down-right, down. These, plus stick-up variants and two celebratory poses, means ten sprites to create.
+
+![screenshot one](media/BOS_SpriteExampleOne.PNG)
+
+*Image probaby copyright Konami*
+
+The stick takes on the primary player color, and skates secondary.

@@ -5,7 +5,7 @@ const Sprite = PIXI.Sprite;
 class Player {
     constructor(resources, name) {
         this.name = name;
-        this.sprite = new Sprite(resources.pv1.texture);
+        this.sprite = new Sprite(resources.pv2.texture);
         this.w = this.sprite.width;
         this.h = this.sprite.height;
         this.sprite.pivot.set(this.w / 2, this.h / 2);
@@ -120,16 +120,22 @@ class Player {
         // Non-trig bits.
         this.x += dxNormalized;
         this.y += dyNormalized;
+
         console.log(`
         [${dx},${dy}] Moving player to ${this.x},${this.y}
         angle: ${angle}
         x: ${dx} => ${dxNormalized}
         y: ${dy} => ${dyNormalized}
+        zi: ${this.sprite.zIndex}
+        zo: ${this.sprite.zOrder}
         `);
+
         this.sprite.x = this.x;
         this.sprite.y = this.y;
-        this.sprite.scale.x = (dxNormalized <= 0) ? 1 : -1;
-        this.sprite.skew.x = -dxNormalized / 5;
+        this.sprite.scale.x = (dxNormalized >= 0) ? 1 : -1;
+        // this.sprite.skew.x = -dxNormalized / 6;
+        this.sprite.zIndex = this.y;
+        this.sprite.zOrder = this.y;
     }
 
     limitSpeed() {

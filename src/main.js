@@ -29,6 +29,7 @@ const Sprite = PIXI.Sprite;
 const engine = new Engine(gameWidth, gameHeight);
 let sam = null; // Player test.
 let npc = null;
+const players = [];
 const playerInput = new Input();
 
 window.addEventListener('resize', () => {
@@ -46,6 +47,7 @@ function game() {
 
     loader
         .add('pv1', 'sprites/player-v1.png')
+        .add('pv2', 'sprites/player-v2.png')
         .on('progress', handleProgress)
         .load(setup);
 }
@@ -56,9 +58,13 @@ function game() {
 function setup() {
     sam = new Player(resources, 'sam');
     sam.useInput(playerInput);
+    players.push(sam);
+    sam.sprite.zOrder = 4;
 
     npc = new Player(resources, 'npc');
     npc.useAI();
+    players.push(npc);
+    npc.sprite.zOrder = -4;
 
     console.log(`
     Sprite size: ${sam.sprite.width},${sam.sprite.height}
@@ -80,10 +86,22 @@ function animate() {
     npc.action();
 
     /*
+    let z = 1;
+
+    console.log('\nOrder:');
+
+    players.sort((a, b) => a.y - b.y).forEach((p) => {
+        p.sprite.zOrder = z;
+        z++;
+        console.log(`${p.name} z: ${z} z:${p.sprite.zOrder} y:${p.y}`);
+    });
+
+    /*
     sam.sprite.rotation += 0.02;
     const scale = 1 + Math.sin(sam.sprite.rotation * 2) / 3;
     sam.sprite.scale.set(scale, scale);
     */
+
 
     stats.end();
 
