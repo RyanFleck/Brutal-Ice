@@ -3,14 +3,15 @@ import * as Stats from 'stats.js';
 
 /*
  * Game components are stored in the inc/ directory.
+ *  - Engine -> Instantiates PIXI application.
  *  - Player -> The primary player logic/sprite control.
  */
 import Engine from './inc/engine';
 import Player from './inc/player';
+import Input from './inc/input';
 
 const stats = new Stats();
 stats.showPanel(0);
-
 
 // Constants
 const gameWidth = 256;
@@ -26,12 +27,12 @@ const Sprite = PIXI.Sprite;
 
 // Important Game Elements
 const engine = new Engine(gameWidth, gameHeight);
+let sam = null; // Player test.
+const input = new Input();
 
 window.addEventListener('resize', () => {
     engine.resize();
 }, false);
-
-let sam = null;
 
 function game() {
     console.log('running...');
