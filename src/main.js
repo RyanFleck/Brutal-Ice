@@ -28,6 +28,7 @@ const Sprite = PIXI.Sprite;
 // Important Game Elements
 const engine = new Engine(gameWidth, gameHeight);
 let sam = null; // Player test.
+let npc = null;
 const playerInput = new Input();
 
 window.addEventListener('resize', () => {
@@ -56,13 +57,19 @@ function setup() {
     sam = new Player(resources, 'sam');
     sam.useInput(playerInput);
 
+    npc = new Player(resources, 'npc');
+    npc.useAI();
+
     console.log(`
     Sprite size: ${sam.sprite.width},${sam.sprite.height}
     `);
 
     sam.moveTo(gameWidth / 2, gameHeight / 2);
+    npc.moveTo(gameWidth / 2 + 16, gameHeight / 2 + 16);
+    
 
     engine.app.stage.addChild(sam.sprite);
+    engine.app.stage.addChild(npc.sprite);
     console.log('gotime.');
     animate();
 }
@@ -71,6 +78,7 @@ function animate() {
     stats.begin();
 
     sam.action();
+    npc.action();
 
     /*
     sam.sprite.rotation += 0.02;

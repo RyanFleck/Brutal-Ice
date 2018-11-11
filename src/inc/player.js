@@ -35,14 +35,14 @@ class Player {
             this.accelerating_x = true;
         } else {
             this.accelerating_x = false;
-            this.x_speed = slow(this.x_speed, this.friction, this.min);
+            this.x_speed = this.slow(this.x_speed);
         }
 
         if (this.input.up || this.input.down) {
             this.accelerating_y = true;
         } else {
             this.accelerating_y = false;
-            this.y_speed = slow(this.y_speed, this.friction, this.min);
+            this.y_speed = this.slow(this.y_speed);
         }
 
         if (this.input.up) {
@@ -72,23 +72,17 @@ class Player {
         if (this.x_speed || this.y_speed) {
             this.move(this.x_speed, this.y_speed);
         }
-
-        function slow(speed, rate, min) {
-            if (speed > 0 && speed < min) {
-                return 0;
-            }
-
-            if (speed < 0 && speed > -min) {
-                return 0;
-            }
-
-            return Number((speed * rate).toFixed(4));
-        }
     }
 
     npcAction() {
-        if (this.npc) {
-            console.error('NPC Brain not found!');
+        if (this.x < 200) {
+            this.x_speed += 0.04;
+        }else {
+            this.x_speed = this.slow(this.x_speed, this.friction, this.min);
+        }
+        this.limitSpeed();
+        if (this.x_speed || this.y_speed) {
+            this.move(this.x_speed, this.y_speed);
         }
     }
 
@@ -129,7 +123,7 @@ class Player {
         this.sprite.x = this.x;
         this.sprite.y = this.y;
         this.sprite.scale.x = (dxNormalized <= 0) ? 1 : -1;
-        this.sprite.skew.x = -dxNormalized/5;
+        this.sprite.skew.x = -dxNormalized / 5;
     }
 
     limitSpeed() {
@@ -146,6 +140,18 @@ class Player {
         if (this.y_speed < -this.y_max_speed) {
             this.y_speed = -this.y_max_speed;
         }
+    }
+
+    slow(speed) {
+        if (speed > 0 && speed < this.min) {
+            return 0;
+        }
+
+        if (speed < 0 && speed > -this.min) {
+            return 0;
+        }
+
+        return Number((speed * this.friction).toFixed(4));
     }
 
     useInput(input) {
