@@ -1,6 +1,13 @@
 import * as PIXI from 'pixi.js';
 import * as Stats from 'stats.js';
 
+/*
+ * Game components are stored in the inc/ directory.
+ *  - Player -> The primary player logic/sprite control.
+ */
+import Engine from './inc/engine';
+import Player from './inc/player';
+
 const stats = new Stats();
 stats.showPanel(0);
 
@@ -13,35 +20,27 @@ const gameHeight = 240;
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
 // PIXI Aliases as noted in README resources.
-const Application = PIXI.Application;
 const loader = PIXI.loader;
 const resources = PIXI.loader.resources;
 const Sprite = PIXI.Sprite;
 
 // Important Game Elements
-const app = new Application(gameWidth, gameHeight, {
-    antialias: false,
-    transparent: false,
-    roundPixels: true,
-    resolution: window.devicePixelRatio || 1,
-    backgroundColor: 0x222222,
-});
-let sprite = null;
+const engine = new Engine(gameWidth, gameHeight);
+
+window.addEventListener('resize', () => {
+    engine.resize();
+}, false);
+
+let sam = null;
 
 function game() {
     console.log('running...');
 
-    resize();
-    app.view.style.display = 'block';
-    app.view.id = 'brutal-ice';
-    app.autoResize = true;
-    document.getElementById('loading').remove();
-    document.body.appendChild(app.view);
-    document.body.appendChild(stats.dom);
+    engine.resize();
 
-    window.addEventListener('resize', () => {
-        resize();
-    }, false);
+    document.getElementById('loading').remove();
+    document.body.appendChild(engine.app.view);
+    document.body.appendChild(stats.dom);
 
     loader
         .add('pv1', 'sprites/player-v1.png')
@@ -53,16 +52,14 @@ function game() {
  * Setup runs after all resources have been loaded as textures.
  */
 function setup() {
-    sprite = new Sprite(resources.pv1.texture);
+    sam = new Player(resources, 'sam');
     console.log(`
-    Sprite size: ${sprite.width},${sprite.height}
+    Sprite size: ${sam.sprite.width},${sam.sprite.height}
     `);
 
-    sprite.pivot.set(sprite.width / 2, sprite.height / 2);
-    sprite.x = gameWidth / 2;
-    sprite.y = gameHeight / 2;
+    sam.moveTo(gameWidth / 2, gameHeight / 2);
 
-    app.stage.addChild(sprite);
+    engine.app.stage.addChild(sam.sprite);
     console.log('gotime.');
     animate();
 }
@@ -70,24 +67,13 @@ function setup() {
 function animate() {
     stats.begin();
 
-    sprite.rotation += 0.02;
-    const scale = 1 + Math.sin(sprite.rotation * 2) / 3;
-    sprite.scale.set(scale, scale);
+    sam.sprite.rotation += 0.02;
+    const scale = 1 + Math.sin(sam.sprite.rotation * 2) / 3;
+    sam.sprite.scale.set(scale, scale);
 
     stats.end();
 
     requestAnimationFrame(animate);
-}
-
-function resize() {
-    const scale = Math.min(
-        window.innerWidth / gameWidth,
-        window.innerHeight / gameHeight,
-    );
-
-    // console.log(`Resizing to ${window.innerWidth}, ${window.innerHeight}. Scale ${scale}.`);
-    app.renderer.resize(Math.ceil(gameWidth * scale), Math.ceil(gameHeight * scale));
-    app.stage.scale.set(scale);
 }
 
 function handleProgress(iloader, resource) {

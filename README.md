@@ -4,6 +4,8 @@ Brutal Ice will be my *very first (usable) public game.*
 
 Remake of the NES Classic "Blades of Steel" in Pixi.JS with NodeJS/Express/Socket.IO multiplayer engine. Beta will be available soon at <https://ryanfleck.github.io/experiments/brutal-ice>
 
+Render dimensions have been set to reflect the constraints of the NES: `256 x 240`.
+
 (Looks like web-packed Pixi.JS is **>1.4 mb!** Beware loading on mobile phones.)
 
 To run on local machine:
