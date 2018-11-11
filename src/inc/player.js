@@ -77,8 +77,14 @@ class Player {
     npcAction() {
         if (this.x < 200) {
             this.x_speed += 0.04;
-        }else {
-            this.x_speed = this.slow(this.x_speed, this.friction, this.min);
+        } else if (this.y < 50) {
+            this.x_speed = this.slow(this.x_speed);
+            this.y_speed = this.slow(this.y_speed);
+        } else if (this.x > 220 && this.y > 0) {
+            this.y_speed -= 0.04;
+            this.x_speed = this.slow(this.x_speed);
+        } else {
+            this.x_speed = this.slow(this.x_speed);
         }
         this.limitSpeed();
         if (this.x_speed || this.y_speed) {

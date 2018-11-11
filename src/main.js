@@ -66,7 +66,6 @@ function setup() {
 
     sam.moveTo(gameWidth / 2, gameHeight / 2);
     npc.moveTo(gameWidth / 2 + 16, gameHeight / 2 + 16);
-    
 
     engine.app.stage.addChild(sam.sprite);
     engine.app.stage.addChild(npc.sprite);
