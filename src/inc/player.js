@@ -15,15 +15,15 @@ class Player {
         this.y_speed = 0;
 
         // Limits and Statistics
-        this.x_max_speed = 1;
-        this.y_max_speed = 1;
+        this.x_max_speed = 2;
+        this.y_max_speed = 2;
         this.min = 0.1;
         this.npc = true;
         this.haspuck = false;
         this.accelerating_x = false;
         this.accelerating_y = false;
         this.friction = (39 / 40);
-        this.acceleration_speed = 0.05;
+        this.acceleration_speed = 0.08;
     }
 
     /*

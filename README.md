@@ -29,3 +29,11 @@ In this screenshot of *BOS*, it can be seen that the player sprites are simply y
 *Image probaby copyright Konami*
 
 The stick takes on the primary player color, and skates secondary.
+
+Step one was getting a background. I stitched a bunch of *BOS* screenshots together to make this:
+
+![Full rink stitch.](media/Full-Rink-Initial.png)
+
+And then spent a silly amount of time to clean it up and make this, my backdrop:
+
+![Full rink stitch final.](media/Full-Rink-Final.png)
