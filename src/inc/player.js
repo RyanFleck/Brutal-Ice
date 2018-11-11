@@ -1,4 +1,6 @@
 import * as PIXI from 'pixi.js';
+import { normalize } from 'path';
+import Input from './input';
 
 const Sprite = PIXI.Sprite;
 
@@ -13,13 +15,148 @@ class Player {
         this.y = 0;
         this.x_speed = 0;
         this.y_speed = 0;
+
+        // Limits and Statistics
+        this.x_max_speed = 1;
+        this.y_max_speed = 1;
+        this.min = 0.1;
+        this.npc = true;
+        this.haspuck = false;
+        this.accelerating_x = false;
+        this.accelerating_y = false;
+        this.friction = (39 / 40);
+        this.acceleration_speed = 0.07;
+    }
+
+    /*
+     * action() is called with every animation frame.
+     */
+
+    inputAction() {
+        if (this.input.right || this.input.left) {
+            this.accelerating_x = true;
+        } else {
+            this.accelerating_x = false;
+            this.x_speed = slow(this.x_speed, this.friction, this.min);
+        }
+
+        if (this.input.up || this.input.down) {
+            this.accelerating_y = true;
+        } else {
+            this.accelerating_y = false;
+            this.y_speed = slow(this.y_speed, this.friction, this.min);
+        }
+
+        if (this.input.up) {
+            console.log('UP Action. Move up.');
+            this.y_speed -= this.acceleration_speed;
+        }
+        if (this.input.down) {
+            console.log('DOWN Action. Move down.');
+            this.y_speed += this.acceleration_speed;
+        }
+        if (this.input.left) {
+            console.log('LEFT Action. Move left.');
+            this.x_speed -= this.acceleration_speed;
+        }
+        if (this.input.right) {
+            console.log('RIGHT Action. Move right.');
+            this.x_speed += this.acceleration_speed;
+        }
+        if (this.input.primary) {
+            console.log('PRIMARY Action. Shoot the puck.');
+        }
+        if (this.input.secondary) {
+            console.log('RIGHT Action. Pass the puck.');
+        }
+
+        this.limitSpeed();
+        if (this.x_speed || this.y_speed) {
+            this.move(this.x_speed, this.y_speed);
+        }
+
+        function slow(speed, rate, min) {
+            if (speed > 0 && speed < min) {
+                return 0;
+            }
+
+            if (speed < 0 && speed > -min) {
+                return 0;
+            }
+
+            return Number((speed * rate).toFixed(4));
+        }
+    }
+
+    npcAction() {
+        if (this.npc) {
+            console.error('NPC Brain not found!');
+        }
     }
 
     moveTo(x, y) {
+        console.log(`Moving player to ${x},${y}`);
         this.x = x;
         this.y = y;
         this.sprite.x = x;
         this.sprite.y = y;
+    }
+
+    move(dx, dy) {
+        // Trig bits will need to be fixed the moment x and y max speed are not the same.
+        // Normalize dx and dy:
+
+        let angle = 0;
+        let dxNormalized = dx; // Math.acos(angle);
+        let dyNormalized = dy; // Math.asin(angle);
+
+        if (dx && dy) {
+            angle = Math.atan(dy / dx);
+            dxNormalized = Math.abs(Math.cos(angle) * dx);
+            dyNormalized = Math.abs(Math.sin(angle) * dy);
+
+            dxNormalized *= ((dx >= 0) ? 1 : -1);
+            dyNormalized *= ((dy >= 0) ? 1 : -1);
+        }
+
+        // Non-trig bits.
+        this.x += dxNormalized;
+        this.y += dyNormalized;
+        console.log(`
+        [${dx},${dy}] Moving player to ${this.x},${this.y}
+        angle: ${angle}
+        x: ${dx} => ${dxNormalized}
+        y: ${dy} => ${dyNormalized}
+        `);
+        this.sprite.x = this.x;
+        this.sprite.y = this.y;
+    }
+
+    limitSpeed() {
+        if (this.x_speed > this.x_max_speed) {
+            this.x_speed = this.x_max_speed;
+        }
+        if (this.y_speed > this.y_max_speed) {
+            this.y_speed = this.y_max_speed;
+        }
+
+        if (this.x_speed < -this.x_max_speed) {
+            this.x_speed = -this.x_max_speed;
+        }
+        if (this.y_speed < -this.y_max_speed) {
+            this.y_speed = -this.y_max_speed;
+        }
+    }
+
+    useInput(input) {
+        this.input = input;
+        this.npc = false;
+        this.action = this.inputAction;
+    }
+
+    useAI() {
+        this.npc = true;
+        this.action = this.npcAction;
     }
 }
 

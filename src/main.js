@@ -28,7 +28,7 @@ const Sprite = PIXI.Sprite;
 // Important Game Elements
 const engine = new Engine(gameWidth, gameHeight);
 let sam = null; // Player test.
-const input = new Input();
+const playerInput = new Input();
 
 window.addEventListener('resize', () => {
     engine.resize();
@@ -54,6 +54,8 @@ function game() {
  */
 function setup() {
     sam = new Player(resources, 'sam');
+    sam.useInput(playerInput);
+
     console.log(`
     Sprite size: ${sam.sprite.width},${sam.sprite.height}
     `);
@@ -68,9 +70,13 @@ function setup() {
 function animate() {
     stats.begin();
 
+    sam.action();
+
+    /*
     sam.sprite.rotation += 0.02;
     const scale = 1 + Math.sin(sam.sprite.rotation * 2) / 3;
     sam.sprite.scale.set(scale, scale);
+    */
 
     stats.end();
 
