@@ -1,6 +1,4 @@
 import * as PIXI from 'pixi.js';
-import { normalize } from 'path';
-import Input from './input';
 
 const Sprite = PIXI.Sprite;
 
@@ -25,7 +23,7 @@ class Player {
         this.accelerating_x = false;
         this.accelerating_y = false;
         this.friction = (39 / 40);
-        this.acceleration_speed = 0.07;
+        this.acceleration_speed = 0.05;
     }
 
     /*
@@ -130,6 +128,8 @@ class Player {
         `);
         this.sprite.x = this.x;
         this.sprite.y = this.y;
+        this.sprite.scale.x = (dxNormalized <= 0) ? 1 : -1;
+        this.sprite.skew.x = -dxNormalized/5;
     }
 
     limitSpeed() {
