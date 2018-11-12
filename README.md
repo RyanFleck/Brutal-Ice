@@ -41,3 +41,7 @@ And then spent a silly amount of time to clean it up and make this, my backdrop:
 Also important was removing all the components players could appear in front of, and making some improvements to the classsic rink (transparency).
 
 ![Full rink crop.](media/backdrop-transparent-boards-crop.png)
+
+Next step was producing the spritesheet. I spent a while watching players at 6% emulation speed to get this:
+
+![Full rink crop.](media/PlayerSheet.png)
