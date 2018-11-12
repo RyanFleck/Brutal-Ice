@@ -29,6 +29,7 @@ const Sprite = PIXI.Sprite;
 const engine = new Engine(gameWidth, gameHeight);
 let sam = null; // Player test.
 let npc = null;
+let rink = null;
 const players = [];
 const playerInput = new Input();
 
@@ -46,6 +47,7 @@ function game() {
     document.body.appendChild(stats.dom);
 
     loader
+        .add('backdrop', 'sprites/backdrop.png')
         .add('pv1', 'sprites/player-v1.png')
         .add('pv2', 'sprites/player-v2.png')
         .on('progress', handleProgress)
@@ -56,6 +58,10 @@ function game() {
  * Setup runs after all resources have been loaded as textures.
  */
 function setup() {
+    rink = new Sprite(resources.backdrop.texture);
+    rink.x = -100;
+    rink.y = -5;
+
     sam = new Player(resources, 'sam');
     sam.useInput(playerInput);
     players.push(sam);
@@ -73,6 +79,7 @@ function setup() {
     sam.moveTo(gameWidth / 2, gameHeight / 2);
     npc.moveTo(gameWidth / 2 + 16, gameHeight / 2 + 16);
 
+    engine.app.stage.addChild(rink);
     engine.app.stage.addChild(sam.sprite);
     engine.app.stage.addChild(npc.sprite);
     console.log('gotime.');

@@ -37,3 +37,4 @@ Step one was getting a background. I stitched a bunch of *BOS* screenshots toget
 And then spent a silly amount of time to clean it up and make this, my backdrop:
 
 ![Full rink stitch final.](media/Full-Rink-Final.png)
+

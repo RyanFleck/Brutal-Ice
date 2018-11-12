@@ -1,4 +1,5 @@
 import * as PIXI from 'pixi.js';
+import { runInThisContext } from 'vm';
 
 const Sprite = PIXI.Sprite;
 
@@ -77,7 +78,7 @@ class Player {
     npcAction() {
         if (this.x < 200) {
             this.x_speed += 0.04;
-        } else if (this.y < 50) {
+        } else if (this.y < 100) {
             this.x_speed = this.slow(this.x_speed);
             this.y_speed = this.slow(this.y_speed);
         } else if (this.x > 220 && this.y > 0) {
@@ -103,7 +104,6 @@ class Player {
     move(dx, dy) {
         // Trig bits will need to be fixed the moment x and y max speed are not the same.
         // Normalize dx and dy:
-
         let angle = 0;
         let dxNormalized = dx; // Math.acos(angle);
         let dyNormalized = dy; // Math.asin(angle);
@@ -115,6 +115,37 @@ class Player {
 
             dxNormalized *= ((dx >= 0) ? 1 : -1);
             dyNormalized *= ((dy >= 0) ? 1 : -1);
+        }
+
+        // Temp bump for boards.
+        //  TOP
+        if (this.y + dyNormalized < 40) {
+            dyNormalized = -dyNormalized;
+            this.y_speed = -this.y_speed / 2;
+            this.y = 40;
+            this.sprite.y = 40;
+        }
+        //  BOTTOM
+        if (this.y + dyNormalized > 240) {
+            dyNormalized = -dyNormalized;
+            this.y_speed = -this.y_speed / 2;
+            this.y = 239;
+            this.sprite.y = 239;
+        }
+        //  LEFT
+        if (this.x + dxNormalized < -20) {
+            dxNormalized = -dxNormalized;
+            this.x_speed = -this.x_speed / 2;
+            this.x = -19;
+            this.sprite.x = -19;
+        }
+
+        //  RIGHT
+        if (this.x + dxNormalized > 270) {
+            dxNormalized = -dxNormalized;
+            this.x_speed = -this.x_speed / 2;
+            this.x = 269;
+            this.sprite.x = 269;
         }
 
         // Non-trig bits.
