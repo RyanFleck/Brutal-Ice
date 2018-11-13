@@ -8,7 +8,7 @@ class Input {
         this.secondary = false;
 
         document.addEventListener('keydown', (e) => {
-            console.log(`>> KEY DOWN ${e.keyCode} + ${e.key} ${e.key.length}`);
+            // console.log(`>> KEY DOWN ${e.keyCode} + ${e.key} ${e.key.length}`);
 
             switch (e.keyCode) {
             case 87: // W Key.
@@ -40,7 +40,7 @@ class Input {
 
 
         document.addEventListener('keyup', (e) => {
-            console.log(`<< KEY UP ${e.keyCode} + ${e.key} ${e.key.length}`);
+            // console.log(`<< KEY UP ${e.keyCode} + ${e.key} ${e.key.length}`);
 
             switch (e.keyCode) {
             case 87: // W Key.

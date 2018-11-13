@@ -45,3 +45,10 @@ Also important was removing all the components players could appear in front of,
 Next step was producing the spritesheet. I spent a while watching players at 6% emulation speed to get this:
 
 ![Full rink crop.](media/PlayerSheet.png)
+
+
+## Important Demos:
+1. Z-Order <https://pixijs.io/examples/#/layers/zorder.js>
+1. NormalMap <https://pixijs.io/examples/#/layers/normals.js>
+1. Spine <https://pixijs.io/examples/#/spine/goblins.js>
+1. Drag/NormalMap <https://pixijs.io/examples/#/layers/normals-drag.js>

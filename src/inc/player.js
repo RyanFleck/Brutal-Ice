@@ -1,7 +1,8 @@
 import * as PIXI from 'pixi.js';
-import { runInThisContext } from 'vm';
 
 const Sprite = PIXI.Sprite;
+const Tex = PIXI.Texture;
+const AnimSpr = PIXI.extras.AnimatedSprite;
 
 class Player {
     constructor(resources, name) {
@@ -14,6 +15,9 @@ class Player {
         this.y = 0;
         this.x_speed = 0;
         this.y_speed = 0;
+        // x and y for animation. Refactor needed to trig-normalize x/y earlier.
+        this.adx = 0.001;
+        this.ady = 0.001;
 
         // Limits and Statistics
         this.x_max_speed = 2;
@@ -25,6 +29,62 @@ class Player {
         this.accelerating_y = false;
         this.friction = (39 / 40);
         this.acceleration_speed = 0.08;
+
+        // Prepare animation frames:
+        this.upFrames = [];
+        this.upRightFrames = [];
+        this.rightFrames = [];
+        this.downRightFrames = [];
+        this.downFrames = [];
+        this.animation = {};
+        this.baseFrameRate = 0.1;
+        this.currentTexture = this.rightFrames;
+
+        // up
+        for (let x = 1; x <= 2; x++) {
+            this.upFrames.push(Tex.fromFrame(`up-0${x}.png`));
+        }
+        this.animation.up = new AnimSpr(this.upFrames);
+        this.setFramerate(this.animation.up);
+
+        // up right
+        for (let x = 1; x <= 2; x++) {
+            this.upRightFrames.push(Tex.fromFrame(`right-up-0${x}.png`));
+        }
+        this.animation.upRight = new AnimSpr(this.upRightFrames);
+        this.setFramerate(this.animation.upRight);
+
+        // right
+        for (let x = 1; x <= 3; x++) {
+            this.rightFrames.push(Tex.fromFrame(`right-0${x}.png`));
+        }
+        this.animation.right = new AnimSpr(this.rightFrames);
+        this.setFramerate(this.animation.right);
+
+        // down right
+        for (let x = 1; x <= 2; x++) {
+            this.downRightFrames.push(Tex.fromFrame(`right-down-0${x}.png`));
+        }
+        this.animation.downRight = new AnimSpr(this.downRightFrames);
+        this.setFramerate(this.animation.downRight);
+
+        // down
+        for (let x = 1; x <= 2; x++) {
+            this.downFrames.push(Tex.fromFrame(`down-0${x}.png`));
+        }
+        this.animation.down = new AnimSpr(this.downFrames);
+        this.setFramerate(this.animation.down);
+
+        // this.animation.forEach(x => console.log(x));
+
+        // Use new sprite.
+        this.sprite = this.animation.downRight;
+    }
+
+    setFramerate(animObj) {
+        animObj.anchor.set(0.5);
+        animObj.animationSpeed = this.baseFrameRate;
+        animObj.play();
     }
 
     /*
@@ -47,32 +107,30 @@ class Player {
         }
 
         if (this.input.up) {
-            console.log('UP Action. Move up.');
             this.y_speed -= this.acceleration_speed;
         }
         if (this.input.down) {
-            console.log('DOWN Action. Move down.');
             this.y_speed += this.acceleration_speed;
         }
         if (this.input.left) {
-            console.log('LEFT Action. Move left.');
             this.x_speed -= this.acceleration_speed;
         }
         if (this.input.right) {
-            console.log('RIGHT Action. Move right.');
             this.x_speed += this.acceleration_speed;
         }
         if (this.input.primary) {
             console.log('PRIMARY Action. Shoot the puck.');
         }
         if (this.input.secondary) {
-            console.log('RIGHT Action. Pass the puck.');
+            console.log('SECONDARY Action. Pass the puck.');
         }
 
         this.limitSpeed();
         if (this.x_speed || this.y_speed) {
             this.move(this.x_speed, this.y_speed);
         }
+
+        this.animate();
     }
 
     npcAction() {
@@ -151,7 +209,9 @@ class Player {
         // Non-trig bits.
         this.x += dxNormalized;
         this.y += dyNormalized;
-
+        this.adx = dxNormalized;
+        this.ady = dyNormalized;
+        /*
         console.log(`
         [${dx},${dy}] Moving player to ${this.x},${this.y}
         angle: ${angle}
@@ -160,7 +220,7 @@ class Player {
         zi: ${this.sprite.zIndex}
         zo: ${this.sprite.zOrder}
         `);
-
+        */
         this.sprite.x = this.x;
         this.sprite.y = this.y;
         this.sprite.scale.x = (dxNormalized >= 0) ? 1 : -1;
@@ -206,6 +266,62 @@ class Player {
     useAI() {
         this.npc = true;
         this.action = this.npcAction;
+    }
+
+    animate() {
+        const hyp = Math.sqrt((this.adx * this.adx) + (this.ady * this.ady));
+        // trigtime
+        const angle = Math.asin(this.ady / hyp);
+
+        // dxNormalized = Math.abs(Math.cos(angle) * dx);
+        // dyNormalized = Math.abs(Math.sin(angle) * dy);
+
+
+        if (angle > 0.9) {
+            this.updateTexture('down');
+        } else if (angle > 0.3) {
+            this.updateTexture('down-right');
+        } else if (angle > -0.3) {
+            this.updateTexture('right');
+        } else if (angle > -0.9) {
+            this.updateTexture('up-right');
+        } else {
+            this.updateTexture('up');
+        }
+
+        if (this.input.right || this.input.left || this.input.up || this.input.down) {
+            this.sprite.play();
+        } else {
+            // this.sprite.stop();
+        }
+    }
+
+    updateTexture(texturename) {
+        if (this.currentTexture !== texturename) {
+            this.sprite.stop();
+            switch (texturename) {
+            case 'up':
+                this.sprite.textures = this.upFrames;
+                break;
+            case 'up-right':
+                this.sprite.textures = this.upRightFrames;
+                break;
+            case 'right':
+                this.sprite.textures = this.rightFrames;
+                break;
+            case 'down-right':
+                this.sprite.textures = this.downRightFrames;
+                break;
+            case 'down':
+                this.sprite.textures = this.downFrames;
+                break;
+            default:
+                this.sprite.textures = this.rightFrames;
+                break;
+            }
+            this.sprite.animationSpeed = this.baseFrameRate;
+            this.sprite.gotoAndPlay(0);
+        }
     }
 }
 

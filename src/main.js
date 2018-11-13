@@ -47,6 +47,7 @@ function game() {
     document.body.appendChild(stats.dom);
 
     loader
+        .add('sprites/player/spritesheet-hash.json')
         .add('backdrop', 'sprites/backdrop.png')
         .add('pv1', 'sprites/player-v1.png')
         .add('pv2', 'sprites/player-v2.png')
@@ -81,7 +82,7 @@ function setup() {
 
     engine.app.stage.addChild(rink);
     engine.app.stage.addChild(sam.sprite);
-    engine.app.stage.addChild(npc.sprite);
+    // engine.app.stage.addChild(npc.sprite);
     console.log('gotime.');
     animate();
 }
