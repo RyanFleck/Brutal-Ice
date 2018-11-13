@@ -19,6 +19,7 @@ To run on local machine:
 
 Resources:
 1. Lots of best practices and initial setup =>  <https://github.com/kittykatattack/learningPixi#settingup>
+2. Object with multiple animations => <http://www.html5gamedevs.com/topic/2393-creating-an-object-with-multiple-animations-in-pixijs/>
 
 ## Development Notes
 
