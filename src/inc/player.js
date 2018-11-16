@@ -40,6 +40,11 @@ class Player {
         this.baseFrameRate = 0.1;
         this.currentTexture = this.rightFrames;
 
+        /*
+         *  EVERY. ANIMATION. HAS. THREE. FRAMES. HOT. DAMN.
+         *    ...time to redo this class. Was a good experiment.
+         */
+
         // up
         for (let x = 1; x <= 2; x++) {
             this.upFrames.push(Tex.fromFrame(`up-0${x}.png`));
