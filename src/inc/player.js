@@ -105,7 +105,6 @@ class Player {
             this.accelerating_y = false;
             this.y_speed = this.slow(this.y_speed);
         }
-
         if (this.input.up) {
             this.y_speed -= this.acceleration_speed;
         }
@@ -292,13 +291,13 @@ class Player {
         if (this.input.right || this.input.left || this.input.up || this.input.down) {
             this.sprite.play();
         } else {
-            // this.sprite.stop();
+            this.sprite.stop();
+            this.sprite.goTo
         }
     }
 
     updateTexture(texturename) {
         if (this.currentTexture !== texturename) {
-            this.sprite.stop();
             switch (texturename) {
             case 'up':
                 this.sprite.textures = this.upFrames;
@@ -320,7 +319,7 @@ class Player {
                 break;
             }
             this.sprite.animationSpeed = this.baseFrameRate;
-            this.sprite.gotoAndPlay(0);
+            this.currentTexture = texturename;
         }
     }
 }
