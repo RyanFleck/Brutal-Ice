@@ -21,7 +21,7 @@ Resources:
 1. Lots of best practices and initial setup =>  <https://github.com/kittykatattack/learningPixi#settingup>
 2. Object with multiple animations => <http://www.html5gamedevs.com/topic/2393-creating-an-object-with-multiple-animations-in-pixijs/>
 
-## Development Notes
+## Development Notes I
 
 In this screenshot of *BOS*, it can be seen that the player sprites are simply y-mirrored and exist facing five directions: up, up-right, right, down-right, down. These, plus stick-up variants and two celebratory poses, means ten sprites to create.
 
@@ -46,6 +46,12 @@ Also important was removing all the components players could appear in front of,
 Next step was producing the spritesheet. I spent a while watching players at 6% emulation speed to get this:
 
 ![Full rink crop.](media/PlayerSheet.png)
+
+## Improving Sprite Workflow:
+
+Testing a new workflow based on <https://github.com/gluckgames/pixi-packer>.
+
+Relies on GraphicsMagick. [Stack overflow thread for WinX64 development.](https://stackoverflow.com/questions/18733695/cimg-error-gm-exe-is-not-recognized-as-an-internal-or-external-command)
 
 
 ## Important Demos:
