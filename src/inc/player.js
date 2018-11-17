@@ -20,7 +20,7 @@ class Player {
         this.ady = 0.001;
 
         // Limits and Statistics
-        this.x_max_speed = 2;
+        this.x_max_speed = 2; // 2
         this.y_max_speed = 2;
         this.min = 0.1;
         this.npc = true;
@@ -45,51 +45,35 @@ class Player {
          *    ...time to redo this class. Was a good experiment.
          */
 
-        // up
-        for (let x = 1; x <= 2; x++) {
-            this.upFrames.push(Tex.fromFrame(`up-0${x}.png`));
-        }
-        this.animation.up = new AnimSpr(this.upFrames);
-        this.setFramerate(this.animation.up);
+        this.interweaveFrames(this.upFrames, this.animation.up, 'up');
+        this.interweaveFrames(this.upRightFrames, this.animation.upRight, 'right-up');
+        this.interweaveFrames(this.downRightFrames, this.animation.downRight, 'right-down');
+        this.interweaveFrames(this.downFrames, this.animation.down, 'down');
 
-        // up right
-        for (let x = 1; x <= 2; x++) {
-            this.upRightFrames.push(Tex.fromFrame(`right-up-0${x}.png`));
-        }
-        this.animation.upRight = new AnimSpr(this.upRightFrames);
-        this.setFramerate(this.animation.upRight);
-
-        // right
+        // right (abnormal)
         for (let x = 1; x <= 3; x++) {
             this.rightFrames.push(Tex.fromFrame(`right-0${x}.png`));
         }
         this.animation.right = new AnimSpr(this.rightFrames);
         this.setFramerate(this.animation.right);
 
-        // down right
-        for (let x = 1; x <= 2; x++) {
-            this.downRightFrames.push(Tex.fromFrame(`right-down-0${x}.png`));
-        }
-        this.animation.downRight = new AnimSpr(this.downRightFrames);
-        this.setFramerate(this.animation.downRight);
-
-        // down
-        for (let x = 1; x <= 2; x++) {
-            this.downFrames.push(Tex.fromFrame(`down-0${x}.png`));
-        }
-        this.animation.down = new AnimSpr(this.downFrames);
-        this.setFramerate(this.animation.down);
-
-        // this.animation.forEach(x => console.log(x));
-
         // Use new sprite.
-        this.sprite = this.animation.downRight;
+        this.sprite = this.animation.right;
     }
 
     setFramerate(animObj) {
         animObj.anchor.set(0.5);
         animObj.animationSpeed = this.baseFrameRate;
         animObj.play();
+    }
+
+    interweaveFrames(frames, animation, prefix) {
+        for (let x = 2; x <= 3; x++) {
+            frames.push(Tex.fromFrame(`${prefix}-01.png`));
+            frames.push(Tex.fromFrame(`${prefix}-0${x}.png`));
+        }
+        animation = new AnimSpr(frames);
+        this.setFramerate(animation);
     }
 
     /*
@@ -296,8 +280,8 @@ class Player {
         if (this.input.right || this.input.left || this.input.up || this.input.down) {
             this.sprite.play();
         } else {
+            this.sprite.gotoAndPlay(0);
             this.sprite.stop();
-            this.sprite.goTo
         }
     }
 

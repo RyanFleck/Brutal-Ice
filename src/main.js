@@ -47,7 +47,7 @@ function game() {
     document.body.appendChild(stats.dom);
 
     loader
-        .add('sprites/player/spritesheet-hash.json')
+        .add('sprites/player/spritesheet.json') // Must be HASH not ARRAY.
         .add('backdrop', 'sprites/backdrop.png')
         .add('pv1', 'sprites/player-v1.png')
         .add('pv2', 'sprites/player-v2.png')
@@ -66,16 +66,11 @@ function setup() {
     sam = new Player(resources, 'sam');
     sam.useInput(playerInput);
     players.push(sam);
-    sam.sprite.zOrder = 4;
+
 
     npc = new Player(resources, 'npc');
     npc.useAI();
     players.push(npc);
-    npc.sprite.zOrder = -4;
-
-    console.log(`
-    Sprite size: ${sam.sprite.width},${sam.sprite.height}
-    `);
 
     sam.moveTo(gameWidth / 2, gameHeight / 2);
     npc.moveTo(gameWidth / 2 + 16, gameHeight / 2 + 16);
