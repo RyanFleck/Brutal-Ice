@@ -1,4 +1,5 @@
 import * as PIXI from 'pixi.js';
+import { runInThisContext } from 'vm';
 
 const Sprite = PIXI.Sprite;
 const Tex = PIXI.Texture;
@@ -39,6 +40,7 @@ class Player {
         this.animation = {};
         this.baseFrameRate = 0.1;
         this.currentTexture = this.rightFrames;
+        this.scale = 1;
 
         /*
          *  EVERY. ANIMATION. HAS. THREE. FRAMES. HOT. DAMN.
@@ -59,6 +61,7 @@ class Player {
 
         // Use new sprite.
         this.sprite = this.animation.right;
+        this.sprite.isPlayer = true;
     }
 
     setFramerate(animObj) {
@@ -122,21 +125,29 @@ class Player {
     }
 
     npcAction() {
-        if (this.x < 200) {
-            this.x_speed += 0.04;
-        } else if (this.y < 100) {
-            this.x_speed = this.slow(this.x_speed);
-            this.y_speed = this.slow(this.y_speed);
-        } else if (this.x > 220 && this.y > 0) {
-            this.y_speed -= 0.04;
+        this.limitSpeed();
+
+        if (Math.abs(this.x_speed) > 0.05) {
+            this.accelerating_x = true;
             this.x_speed = this.slow(this.x_speed);
         } else {
-            this.x_speed = this.slow(this.x_speed);
+            this.accelerating_x = false;
+            this.x_speed = 0;
         }
-        this.limitSpeed();
+
+        if (Math.abs(this.y_speed) > 0.05) {
+            this.accelerating_y = true;
+            this.y_speed = this.slow(this.y_speed);
+        } else {
+            this.accelerating_y = false;
+            this.y_speed = 0;
+        }
+
         if (this.x_speed || this.y_speed) {
             this.move(this.x_speed, this.y_speed);
         }
+
+        this.animate();
     }
 
     moveTo(x, y) {
@@ -211,8 +222,10 @@ class Player {
         */
         this.sprite.x = this.x;
         this.sprite.y = this.y;
-        this.sprite.scale.x = (dxNormalized >= 0) ? 1 : -1;
+        this.sprite.scale.x = (dxNormalized >= 0) ? this.scale : -this.scale;
+        this.sprite.scale.y = this.scale;
         // this.sprite.skew.x = -dxNormalized / 6;
+        this.sprite.animationSpeed = this.baseFrameRate * (0.4 + (0.6 * Math.sqrt((dxNormalized * dxNormalized) + (dyNormalized * dyNormalized))));
         this.sprite.zIndex = this.y;
         this.sprite.zOrder = this.y;
     }
@@ -276,38 +289,45 @@ class Player {
         } else {
             this.updateTexture('up');
         }
-
-        if (this.input.right || this.input.left || this.input.up || this.input.down) {
-            this.sprite.play();
-        } else {
-            this.sprite.gotoAndPlay(0);
-            this.sprite.stop();
+        if (!this.npc) {
+            if (this.input.right || this.input.left || this.input.up || this.input.down) {
+                this.sprite.play();
+            } else {
+                this.sprite.gotoAndPlay(0);
+                this.sprite.stop();
+            }
+        } else if (this.npc) {
+            if (this.accelerating_x || this.accelerating_y) {
+                this.sprite.play();
+            } else {
+                this.sprite.gotoAndPlay(0);
+                this.sprite.stop();
+            }
         }
     }
 
     updateTexture(texturename) {
         if (this.currentTexture !== texturename) {
             switch (texturename) {
-            case 'up':
-                this.sprite.textures = this.upFrames;
-                break;
-            case 'up-right':
-                this.sprite.textures = this.upRightFrames;
-                break;
-            case 'right':
-                this.sprite.textures = this.rightFrames;
-                break;
-            case 'down-right':
-                this.sprite.textures = this.downRightFrames;
-                break;
-            case 'down':
-                this.sprite.textures = this.downFrames;
-                break;
-            default:
-                this.sprite.textures = this.rightFrames;
-                break;
+                case 'up':
+                    this.sprite.textures = this.upFrames;
+                    break;
+                case 'up-right':
+                    this.sprite.textures = this.upRightFrames;
+                    break;
+                case 'right':
+                    this.sprite.textures = this.rightFrames;
+                    break;
+                case 'down-right':
+                    this.sprite.textures = this.downRightFrames;
+                    break;
+                case 'down':
+                    this.sprite.textures = this.downFrames;
+                    break;
+                default:
+                    this.sprite.textures = this.rightFrames;
+                    break;
             }
-            this.sprite.animationSpeed = this.baseFrameRate;
             this.currentTexture = texturename;
         }
     }

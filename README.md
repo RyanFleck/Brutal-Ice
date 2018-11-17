@@ -47,13 +47,13 @@ Next step was producing the spritesheet. I spent a while watching players at 6% 
 
 ![Full rink crop.](media/PlayerSheet.png)
 
-## 20181114 Improving Sprite Workflow:
+## 2018-11-14 Improving Sprite Workflow:
 
 Testing a new workflow based on <https://github.com/gluckgames/pixi-packer>.
 
 Relies on GraphicsMagick. [Stack overflow thread for WinX64 development.](https://stackoverflow.com/questions/18733695/cimg-error-gm-exe-is-not-recognized-as-an-internal-or-external-command)
 
-## 20181116 Player Spritesheet Complete
+## 2018-11-16 Player Spritesheet Complete
 
 Pixi-packer didn't work out. Using <https://www.codeandweb.com/free-sprite-sheet-packer>
 

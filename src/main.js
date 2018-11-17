@@ -31,7 +31,9 @@ let sam = null; // Player test.
 let npc = null;
 let rink = null;
 const players = [];
+let playerSprites = null;
 const playerInput = new Input();
+const rootTwoOverTwo = Math.sqrt(2) / 2;
 
 window.addEventListener('resize', () => {
     engine.resize();
@@ -77,7 +79,8 @@ function setup() {
 
     engine.app.stage.addChild(rink);
     engine.app.stage.addChild(sam.sprite);
-    // engine.app.stage.addChild(npc.sprite);
+    engine.app.stage.addChild(npc.sprite);
+    refreshPlayerSprites(); // Call when new players added.
     console.log('gotime.');
     animate();
 }
@@ -88,27 +91,78 @@ function animate() {
     sam.action();
     npc.action();
 
-    /*
-    let z = 1;
+    // *slap staples brand (tm) easy button after trying hard earlier. Egh.
+    // Organize so players render in y-order.
+    engine.app.stage.children.sort((a, b) => a.y - b.y);
 
-    console.log('\nOrder:');
+    // Player collisions:
+    for (let x = 0; x < players.length; x++) {
+        for (let y = x + 1; y < players.length; y++) {
+            // console.log(`Checking ${x} vs ${y}`);
+            const a = players[x];
+            const b = players[y];
 
-    players.sort((a, b) => a.y - b.y).forEach((p) => {
-        p.sprite.zOrder = z;
-        z++;
-        console.log(`${p.name} z: ${z} z:${p.sprite.zOrder} y:${p.y}`);
-    });
+            const leftbound = (b.x - (b.w / 3));
+            const rightbound = (b.x + (b.w / 3));
+            const lowerbound = (b.y - (b.h / 4));
+            const upperbound = (b.y + (b.h / 4));
 
-    /*
-    sam.sprite.rotation += 0.02;
-    const scale = 1 + Math.sin(sam.sprite.rotation * 2) / 3;
-    sam.sprite.scale.set(scale, scale);
-    */
+            // console.log(`${a.x} is between ${(b.x - (b.w / 2))} ${(b.x + (b.w / 2))}`);
+            if (a.x > leftbound
+                && a.x < rightbound
+                && a.y > lowerbound
+                && a.y < upperbound) {
+                // console.log('collision');
+                bump(a, b, leftbound, rightbound, lowerbound, upperbound);
+            }
+            // console.log(`Checking ${a.x.toFixed(2)},${a.y.toFixed(2)} vs ${b.x.toFixed(2)},${b.y.toFixed(2)}`);
 
+        }
+    }
 
     stats.end();
 
     requestAnimationFrame(animate);
+}
+// a and b are player objects, x and y are booleans.
+function bump(a, b, lb, rb, lob, upb) {
+    // Update speeds
+    const xavg = (a.x_speed + b.x_speed) / 2;
+    b.x_speed = xavg + (-b.x_speed / 2);
+    a.x_speed = xavg + (-a.x_speed / 2);
+
+    const yavg = (a.y_speed + b.y_speed) / 2;
+    a.y_speed = yavg + (-a.y_speed / 2);
+    b.y_speed = yavg + (-b.y_speed / 2);
+
+    // Update positions
+    const xpos = (a.x > b.x);
+    const ypos = (a.y > b.y);
+    const xlen = Math.abs(a.x - b.x);
+    const ylen = Math.abs(a.y - b.y);
+    const hyp = Math.sqrt((xlen * xlen) + (ylen * ylen));
+    const angle = Math.acos(xlen / hyp);
+    console.log(`Collision angle: ${Math.cos(angle)}.`);
+    if (Math.cos(angle) > rootTwoOverTwo) {
+        console.log('SIDE');
+        if (xpos) {
+            a.x = rb + 1;
+        } else {
+            a.x = lb - 1;
+        }
+    } else {
+        console.log('TOP');
+        if (ypos) {
+            a.y = upb + 1;
+        } else {
+            a.y = lob - 1;
+        }
+    }
+
+}
+
+function refreshPlayerSprites() {
+    playerSprites = engine.app.stage.children.filter(x => x.isPlayer);
 }
 
 function handleProgress(iloader, resource) {
