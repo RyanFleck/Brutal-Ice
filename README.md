@@ -64,3 +64,11 @@ Pixi-packer didn't work out. Using <https://www.codeandweb.com/free-sprite-sheet
 1. NormalMap <https://pixijs.io/examples/#/layers/normals.js>
 1. Spine <https://pixijs.io/examples/#/spine/goblins.js>
 1. Drag/NormalMap <https://pixijs.io/examples/#/layers/normals-drag.js>
+
+## 2018-11-24 Camera Movement
+
+Added basic full-rink camera panning.
+
+Amazing gamepad testing tool here **=>** <http://html5gamepad.com/>
+
+Will add this soon.

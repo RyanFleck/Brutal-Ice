@@ -78,6 +78,31 @@ function setup() {
 
     npc = new Player(resources, 'npc');
     npc.useAI();
+    npc.actionqueue.push({
+        type: 'move',
+        x: -10,
+        y: 203,
+    });
+
+    npc.actionqueue.push({
+        type: 'move',
+        x: (30),
+        y: (75),
+    });
+
+    npc.actionqueue.push({
+        type: 'move',
+        x: (gameWidth / 2 + 40),
+        y: (gameHeight / 2 + 30),
+    });
+
+    npc.actionqueue.push({
+        type: 'move',
+        x: (gameWidth / 2 - 16),
+        y: (gameHeight / 2 + 30),
+    });
+
+
     players.push(npc);
 
     sam.moveTo(gameWidth / 2, gameHeight / 2);

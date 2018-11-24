@@ -19,6 +19,7 @@ class Player {
         // x and y for animation. Refactor needed to trig-normalize x/y earlier.
         this.adx = 0.001;
         this.ady = 0.001;
+        this.actionqueue = [];
 
         // Limits and Statistics
         this.x_max_speed = 2; // 2
@@ -125,19 +126,57 @@ class Player {
     }
 
     npcAction() {
+        if (this.actionqueue[0]) {
+            const action = this.actionqueue[0];
+            console.log(action.type);
+
+            console.log(`
+                A:(${this.x},${this.y})
+                B:(${action.x},${action.y})
+                Diff:${this.hyp({ x: this.x, y: this.y }, { x: action.x, y: action.y })}
+                `);
+
+            if (this.hyp({ x: this.x, y: this.y }, { x: action.x, y: action.y }) < 15) {
+                this.actionqueue.shift();
+                this.accelerating_x = false;
+                this.accelerating_y = false;
+            } else {
+                this.accelerating_x = true;
+                this.accelerating_y = true;
+
+                if (this.x > action.x) {
+                    this.x_speed -= this.acceleration_speed;
+                }
+
+                if (this.x < action.x) {
+                    this.x_speed += this.acceleration_speed;
+                }
+
+                if (this.y > action.y) {
+                    this.y_speed -= this.acceleration_speed;
+                }
+
+                if (this.y < action.y) {
+                    this.y_speed += this.acceleration_speed;
+                }
+            }
+        }
+
         this.limitSpeed();
 
         if (Math.abs(this.x_speed) > 0.05) {
-            this.accelerating_x = true;
-            this.x_speed = this.slow(this.x_speed);
+            if (!this.accelerating_x) {
+                this.x_speed = this.slow(this.x_speed);
+            }
         } else {
             this.accelerating_x = false;
             this.x_speed = 0;
         }
 
         if (Math.abs(this.y_speed) > 0.05) {
-            this.accelerating_y = true;
-            this.y_speed = this.slow(this.y_speed);
+            if (!this.accelerating_y) {
+                this.y_speed = this.slow(this.y_speed);
+            }
         } else {
             this.accelerating_y = false;
             this.y_speed = 0;
@@ -210,7 +249,8 @@ class Player {
         this.y += dyNormalized;
         this.adx = dxNormalized;
         this.ady = dyNormalized;
-        
+
+        /*
         console.log(`
         [${dx},${dy}] Moving player to ${this.x},${this.y}
         angle: ${angle}
@@ -219,7 +259,9 @@ class Player {
         zi: ${this.sprite.zIndex}
         zo: ${this.sprite.zOrder}
         `);
-        
+        */
+        console.log(`${this.name}: ${this.x},${this.y}`);
+
         this.sprite.x = this.x;
         this.sprite.y = this.y;
         this.sprite.scale.x = (dxNormalized >= 0) ? this.scale : -this.scale;
@@ -269,6 +311,12 @@ class Player {
         this.action = this.npcAction;
     }
 
+    hyp(pointA, pointB) {
+        const xlen = Math.abs(pointA.x - pointB.x);
+        const ylen = Math.abs(pointA.y - pointB.y);
+        return Math.sqrt((xlen * xlen) + (ylen * ylen));
+    }
+
     animate() {
         const hyp = Math.sqrt((this.adx * this.adx) + (this.ady * this.ady));
         // trigtime
@@ -309,24 +357,24 @@ class Player {
     updateTexture(texturename) {
         if (this.currentTexture !== texturename) {
             switch (texturename) {
-                case 'up':
-                    this.sprite.textures = this.upFrames;
-                    break;
-                case 'up-right':
-                    this.sprite.textures = this.upRightFrames;
-                    break;
-                case 'right':
-                    this.sprite.textures = this.rightFrames;
-                    break;
-                case 'down-right':
-                    this.sprite.textures = this.downRightFrames;
-                    break;
-                case 'down':
-                    this.sprite.textures = this.downFrames;
-                    break;
-                default:
-                    this.sprite.textures = this.rightFrames;
-                    break;
+            case 'up':
+                this.sprite.textures = this.upFrames;
+                break;
+            case 'up-right':
+                this.sprite.textures = this.upRightFrames;
+                break;
+            case 'right':
+                this.sprite.textures = this.rightFrames;
+                break;
+            case 'down-right':
+                this.sprite.textures = this.downRightFrames;
+                break;
+            case 'down':
+                this.sprite.textures = this.downFrames;
+                break;
+            default:
+                this.sprite.textures = this.rightFrames;
+                break;
             }
             this.currentTexture = texturename;
         }
