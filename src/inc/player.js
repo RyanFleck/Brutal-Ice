@@ -190,19 +190,19 @@ class Player {
             this.sprite.y = 239;
         }
         //  LEFT
-        if (this.x + dxNormalized < -20) {
+        if (this.x + dxNormalized < -30) {
             dxNormalized = -dxNormalized;
             this.x_speed = -this.x_speed / 2;
-            this.x = -19;
-            this.sprite.x = -19;
+            this.x = -29;
+            this.sprite.x = -29;
         }
 
         //  RIGHT
-        if (this.x + dxNormalized > 270) {
+        if (this.x + dxNormalized > 617) {
             dxNormalized = -dxNormalized;
             this.x_speed = -this.x_speed / 2;
-            this.x = 269;
-            this.sprite.x = 269;
+            this.x = 616;
+            this.sprite.x = 616;
         }
 
         // Non-trig bits.
@@ -210,7 +210,7 @@ class Player {
         this.y += dyNormalized;
         this.adx = dxNormalized;
         this.ady = dyNormalized;
-        /*
+        
         console.log(`
         [${dx},${dy}] Moving player to ${this.x},${this.y}
         angle: ${angle}
@@ -219,7 +219,7 @@ class Player {
         zi: ${this.sprite.zIndex}
         zo: ${this.sprite.zOrder}
         `);
-        */
+        
         this.sprite.x = this.x;
         this.sprite.y = this.y;
         this.sprite.scale.x = (dxNormalized >= 0) ? this.scale : -this.scale;

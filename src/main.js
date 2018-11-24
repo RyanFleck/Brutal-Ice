@@ -16,6 +16,8 @@ stats.showPanel(0);
 // Constants
 const gameWidth = 256;
 const gameHeight = 240;
+const xPivot = gameWidth / 2;
+const yPivot = gameHeight / 2;
 
 // PIXI Config
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
@@ -34,6 +36,10 @@ const players = [];
 let playerSprites = null;
 const playerInput = new Input();
 const rootTwoOverTwo = Math.sqrt(2) / 2;
+
+// Camera
+let camx = 0;
+const camy = 0;
 
 window.addEventListener('resize', () => {
     engine.resize();
@@ -116,9 +122,10 @@ function animate() {
                 bump(a, b, leftbound, rightbound, lowerbound, upperbound);
             }
             // console.log(`Checking ${a.x.toFixed(2)},${a.y.toFixed(2)} vs ${b.x.toFixed(2)},${b.y.toFixed(2)}`);
-
         }
     }
+
+    moveCamera(sam.x, sam.y);
 
     stats.end();
 
@@ -147,6 +154,7 @@ function bump(a, b, lb, rb, lob, upb) {
         console.log('SIDE');
         if (xpos) {
             a.x = rb + 1;
+            // Might be good to move speed-adjust from higher scope to here.
         } else {
             a.x = lb - 1;
         }
@@ -158,7 +166,6 @@ function bump(a, b, lb, rb, lob, upb) {
             a.y = lob - 1;
         }
     }
-
 }
 
 function refreshPlayerSprites() {
@@ -169,7 +176,23 @@ function handleProgress(iloader, resource) {
     console.log(`Loading resources [${iloader.progress}%]: ${resource.url}`);
 }
 
+/*
+ * Simple centered camera. Will need to implement a look-ahead camera.
+ */
+function moveCamera(x, y) {
+    const diff = (camx + xPivot) - x;
+    console.log(diff);
+
+    if (diff < -10) {
+        camx -= diff / 50;
+    } else if (diff > 10) {
+        camx -= diff / 50;
+    }
+
+    engine.app.stage.pivot.set(camx, camy);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-    // setTimeout(game, 25);
+    // setTimeout(game, 25);ssssssss
     game();
 });
